@@ -8,10 +8,10 @@ import numpy as np
 
 print("imported glob, np........................................................................................")
 
-#x_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/x_*.pkl")
+x_files = glob.glob("/scratch/vljchr004/1_8_to_2_2_GeV/x_*.pkl")
 #y_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/y_*.pkl")
 
-x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\1_8_to_2_2_GeV\\x_*.pkl")
+#x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\1_8_to_2_2_GeV\\x_*.pkl")
 
 import pickle
 
@@ -173,7 +173,7 @@ for img in imgs:
     plt.figure(figsize=(17,24))
     plt.axis('off')
     plt.imshow(img, cmap='gray')
-    plt.savefig('C:/Users/Gerhard/Documents/deep-gen/vae3_res'+str(i)+'.png', bbox_inches='tight')
+    plt.savefig('/home/vljchr004/deep-gen/vae4_res'+str(i)+'.png', bbox_inches='tight')
 
 
 
