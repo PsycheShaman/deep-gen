@@ -160,15 +160,15 @@ for i in range(100000):
         
     if not i % 200:
         ls, d, i_ls, d_ls, mu, sigm = sess.run([loss, dec, img_loss, latent_loss, mn, sd], feed_dict = {X_in: batch, Y: batch, keep_prob: 1.0})
-        plt.imshow(np.reshape(batch[0], [17, 24]), cmap='gray')
-        plt.show()
+#        plt.imshow(np.reshape(batch[0], [17, 24]), cmap='gray')
+#        plt.show()
 #        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae4_train'+str(i)+'_real'+'.png', bbox_inches='tight')
         
-        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_real'+'.png', bbox_inches='tight')
-        plt.imshow(d[0], cmap='gray')
-        plt.show()
+#        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_real'+'.png', bbox_inches='tight')
+#        plt.imshow(d[0], cmap='gray')
+#        plt.show()
 #        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae4_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
-        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
+#        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
         print(i, ls, np.mean(i_ls), np.mean(d_ls))
 
 
