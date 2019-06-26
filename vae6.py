@@ -80,7 +80,7 @@ Y_flat = tf.reshape(Y, shape=[-1, 17 * 24])
 keep_prob = tf.placeholder(dtype=tf.float32, shape=(), name='keep_prob')
 
 dec_in_channels = 1
-n_latent = 8
+n_latent = 12
 
 #reshaped_dim = [-1, 7, 7, dec_in_channels]
 #inputs_decoder = 49 * dec_in_channels / 2
@@ -156,8 +156,10 @@ for i in range(100000):
         ls, d, i_ls, d_ls, mu, sigm = sess.run([loss, dec, img_loss, latent_loss, mn, sd], feed_dict = {X_in: batch, Y: batch, keep_prob: 1.0})
         plt.imshow(np.reshape(batch[0], [17, 24]), cmap='gray')
         plt.show()
+        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae6_train'+str(i)+'_real'+'.png', bbox_inches='tight')
         plt.imshow(d[0], cmap='gray')
         plt.show()
+        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae6_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
         print(i, ls, np.mean(i_ls), np.mean(d_ls))
 
 
@@ -173,7 +175,7 @@ for img in imgs:
     plt.figure(figsize=(17,24))
     plt.axis('off')
     plt.imshow(img, cmap='gray')
-    plt.savefig('C:/Users/Gerhard/Documents/deep-gen/vae3_res'+str(i)+'.png', bbox_inches='tight')
+    plt.savefig('C:/Users/Gerhard/Documents/deep-gen/vae6_res'+str(i)+'.png', bbox_inches='tight')
 
 
 

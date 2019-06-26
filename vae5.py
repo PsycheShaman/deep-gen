@@ -8,8 +8,7 @@ import numpy as np
 
 print("imported glob, np........................................................................................")
 
-#x_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/x_*.pkl")
-#y_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/y_*.pkl")
+#x_files = glob.glob("/scratch/vljchr004/1_8_to_2_2_GeV/x_*.pkl")
 
 x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\1_8_to_2_2_GeV\\x_*.pkl")
 
@@ -28,21 +27,7 @@ for i in x_files[1:]:
         print(i)
         xi = pickle.load(x_file)
         xi.shape = (xi.shape[1],xi.shape[2],xi.shape[3])
-        x = np.concatenate((x,xi),axis=0)
- 
-    
-#x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\cnn\\x_*.npy")
-#
-##x_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/x_*.npy")
-##y_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/y_*.npy")
-#       
-#print("recursively adding x numpys........................................................................................")
-#
-#for i in x_files[0:]:
-#    with open(i,'rb') as x_file:
-#        print(i)
-#        xi = np.load(x_file)
-#        x = np.concatenate((x,xi),axis=0)       
+        x = np.concatenate((x,xi),axis=0)     
 
 print("removing useless elements........................................................................................")
 
@@ -60,10 +45,6 @@ for i in range(0,x.shape[0]):
 
 x.shape = (x.shape[0],408)
 
-#mu = np.mean(x)
-#
-#x = x.astype('float32')/mu
-
 from sklearn.model_selection import train_test_split
 
 x_train, x_test = train_test_split(x, test_size=0.2,random_state=123456)
@@ -80,7 +61,7 @@ Y_flat = tf.reshape(Y, shape=[-1, 17 * 24])
 keep_prob = tf.placeholder(dtype=tf.float32, shape=(), name='keep_prob')
 
 dec_in_channels = 1
-n_latent = 8
+n_latent = 12
 
 #reshaped_dim = [-1, 7, 7, dec_in_channels]
 #inputs_decoder = 49 * dec_in_channels / 2
@@ -95,11 +76,13 @@ def encoder(X_in, keep_prob):
     activation = lrelu
     with tf.variable_scope("encoder", reuse=None):
         X = tf.reshape(X_in, shape=[-1, 17, 24, 1])
-        x = tf.layers.conv2d(X, filters=64, kernel_size=4, strides=2, padding='same', activation=activation)
+        x = tf.layers.conv2d(X, filters=256, kernel_size=6, strides=2, padding='same', activation=activation)
         x = tf.nn.dropout(x, keep_prob)
-        x = tf.layers.conv2d(x, filters=64, kernel_size=4, strides=2, padding='same', activation=activation)
+        x = tf.layers.conv2d(x, filters=128, kernel_size=6, strides=2, padding='same', activation=activation)
         x = tf.nn.dropout(x, keep_prob)
-        x = tf.layers.conv2d(x, filters=64, kernel_size=4, strides=1, padding='same', activation=activation)
+        x = tf.layers.conv2d(x, filters=64, kernel_size=6, strides=1, padding='same', activation=activation)
+        x = tf.nn.dropout(x, keep_prob)
+        x = tf.layers.conv2d(x, filters=32, kernel_size=6, strides=1, padding='same', activation=activation)
         x = tf.nn.dropout(x, keep_prob)
         x = tf.contrib.layers.flatten(x)
         mn = tf.layers.dense(x, units=n_latent)
@@ -115,12 +98,14 @@ def decoder(sampled_z, keep_prob):
 #        x = tf.layers.dense(x, units=inputs_decoder * 2 + 1, activation=lrelu)
         x = tf.layers.dense(x, units=inputs_decoder * 2, activation=lrelu)
         x = tf.reshape(x, reshaped_dim)
-        x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=4, strides=2, padding='same', activation=tf.nn.relu)
+        x = tf.layers.conv2d_transpose(x, filters=256, kernel_size=6, strides=2, padding='same', activation=tf.nn.relu)
         x = tf.nn.dropout(x, keep_prob)
-        x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=4, strides=1, padding='same', activation=tf.nn.relu)
+        x = tf.layers.conv2d_transpose(x, filters=128, kernel_size=6, strides=1, padding='same', activation=tf.nn.relu)
         x = tf.nn.dropout(x, keep_prob)
-        x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=4, strides=1, padding='same', activation=tf.nn.relu)
-        
+        x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=6, strides=1, padding='same', activation=tf.nn.relu)
+        x = tf.nn.dropout(x, keep_prob)
+        x = tf.layers.conv2d_transpose(x, filters=32, kernel_size=6, strides=1, padding='same', activation=tf.nn.relu)
+        x = tf.nn.dropout(x, keep_prob)
         x = tf.contrib.layers.flatten(x)
         x = tf.layers.dense(x, units=17*24, activation=tf.nn.sigmoid)
         img = tf.reshape(x, shape=[-1, 17, 24])
@@ -156,8 +141,13 @@ for i in range(100000):
         ls, d, i_ls, d_ls, mu, sigm = sess.run([loss, dec, img_loss, latent_loss, mn, sd], feed_dict = {X_in: batch, Y: batch, keep_prob: 1.0})
         plt.imshow(np.reshape(batch[0], [17, 24]), cmap='gray')
         plt.show()
+#        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae4_train'+str(i)+'_real'+'.png', bbox_inches='tight')
+        
+#        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_real'+'.png', bbox_inches='tight')
         plt.imshow(d[0], cmap='gray')
         plt.show()
+#        plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae4_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
+#        plt.savefig('/home/vljchr004/deep-gen/vae4_train'+str(i)+'_gen'+'.png', bbox_inches='tight')
         print(i, ls, np.mean(i_ls), np.mean(d_ls))
 
 
@@ -173,8 +163,8 @@ for img in imgs:
     plt.figure(figsize=(17,24))
     plt.axis('off')
     plt.imshow(img, cmap='gray')
-    plt.savefig('C:/Users/Gerhard/Documents/deep-gen/vae3_res'+str(i)+'.png', bbox_inches='tight')
-
+#    plt.savefig('/home/vljchr004/deep-gen/vae4_res'+str(i)+'.png', bbox_inches='tight')
+    plt.savefig('C:\\Users\\gerhard\\Documents\\deep-gen/vae5_res'+str(i)+'.png', bbox_inches='tight')
 
 
 
