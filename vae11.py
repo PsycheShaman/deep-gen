@@ -8,10 +8,10 @@ import numpy as np
 
 print("imported glob, np........................................................................................")
 
-x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data/cnn/x_*.pkl")
+#x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data/cnn/x_*.pkl")
 #y_files = glob.glob("/scratch/vljchr004/data/msc-thesis-data/cnn/y_*.pkl")
 
-#x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\1_8_to_2_2_GeV\\x_*.pkl")
+x_files = glob.glob("C:\\Users\\gerhard\\Documents\\msc-thesis-data\\1_8_to_2_2_GeV\\x_*.pkl")
 
 import pickle
 
@@ -19,7 +19,7 @@ print("loading first x pickle...................................................
 
 with open(x_files[0], 'rb') as x_file0:
     x = pickle.load(x_file0)
-#    x.shape = (x.shape[1],x.shape[2],x.shape[3])
+    x.shape = (x.shape[1],x.shape[2],x.shape[3])
    
 print("recursively adding x pickles........................................................................................")
 
@@ -27,7 +27,7 @@ for i in x_files[1:]:
     with open(i,'rb') as x_file:
         print(i)
         xi = pickle.load(x_file)
-#        xi.shape = (xi.shape[1],xi.shape[2],xi.shape[3])
+        xi.shape = (xi.shape[1],xi.shape[2],xi.shape[3])
         x = np.concatenate((x,xi),axis=0)
  
     
@@ -133,7 +133,7 @@ unreshaped = tf.reshape(dec, [-1, 17*24])
 img_loss = tf.reduce_sum(tf.squared_difference(unreshaped, Y_flat), 1)
 latent_loss = -0.5 * tf.reduce_sum(1.0 + 2.0 * sd - tf.square(mn) - tf.exp(2.0 * sd), 1)
 loss = tf.reduce_mean(img_loss + latent_loss)
-optimizer = tf.train.AdamOptimizer(0.0001).minimize(loss)
+optimizer = tf.train.AdamOptimizer(0.00001).minimize(loss)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
